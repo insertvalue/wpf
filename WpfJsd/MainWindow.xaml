@@ -1,0 +1,15 @@
+﻿<Window x:Class="WpfJsd.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfJsd"
+        mc:Ignorable="d"
+        Title="京小秘" Height="300" Width="500">
+    <Grid>
+        <CheckBox Content="重复通知" x:Name="IsRepeat" HorizontalAlignment="Left" Margin="60.424,122.228,0,0" VerticalAlignment="Top" Click="ConfigCheckBox" Grid.ColumnSpan="2"/>
+        <CheckBox Content="拣货通知" x:Name="IsNew" HorizontalAlignment="Left" Margin="60.424,147.228,0,0" VerticalAlignment="Top" Click="ConfigCheckBox" Grid.ColumnSpan="2"/>
+        <CheckBox Content="滞留通知" x:Name="IsDelay" HorizontalAlignment="Left" Margin="60.424,172.228,0,0" VerticalAlignment="Top" Click="ConfigCheckBox" Grid.ColumnSpan="2"/>
+        <Label Content="拣货任务通知助手" HorizontalAlignment="Left" Margin="60,30,0,0" VerticalAlignment="Top" Width="360" Height="60" Grid.ColumnSpan="2" FontSize="36" FontFamily="Microsoft YaHei UI" Foreground="#FF2A0DBC" FontWeight="Bold"/>
+    </Grid>
+</Window>
