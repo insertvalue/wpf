@@ -32,9 +32,13 @@ namespace WpfJsd
             ToolIcon();
         }
 
-
-        protected async override void OnClosing(CancelEventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
+            e.Cancel = true;
+            ShowTipDialog();
+        }
+
+        private async void ShowTipDialog() {
             MetroDialogSettings settings = new MetroDialogSettings
             {
                 NegativeButtonText = "否",
@@ -43,15 +47,13 @@ namespace WpfJsd
             MessageDialogResult clickresult = await this.ShowMessageAsync("提示", "确定是否关闭当前应用程序？", MessageDialogStyle.AffirmativeAndNegative, settings);
             if (clickresult == MessageDialogResult.Negative)
             {
-                e.Cancel = true;
-                this.Hide();
+                this.Hide();                                   
                 notifyIcon.ShowBalloonTip(1000);
             }
             else
             {
                 System.Windows.Application.Current.Shutdown();
             }
-
         }
 
         public void PollNotify()
