@@ -8,13 +8,15 @@ using System.Configuration;
 using System.Speech.Synthesis;
 using System.Windows.Forms;
 using System.ComponentModel;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace WpfJsd
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         // 轮询间隔
         private int interval = Convert.ToInt16(ConfigurationManager.AppSettings["PollInterval"]) * 60 * 1000;
@@ -22,7 +24,6 @@ namespace WpfJsd
 
         public MainWindow()
         {
-
             PollNotify();
             InitializeComponent();
             IsRepeat.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsRepeat"]);
@@ -32,17 +33,23 @@ namespace WpfJsd
         }
 
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected async override void OnClosing(CancelEventArgs e)
         {
-            if (System.Windows.Forms.MessageBox.Show("确定是否关闭当前应用程序？", "提示", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            MetroDialogSettings settings = new MetroDialogSettings
             {
-                System.Windows.Application.Current.Shutdown();
-            }
-            else
+                NegativeButtonText = "否",
+                AffirmativeButtonText = "是"
+            };
+            MessageDialogResult clickresult = await this.ShowMessageAsync("提示", "确定是否关闭当前应用程序？", MessageDialogStyle.AffirmativeAndNegative, settings);
+            if (clickresult == MessageDialogResult.Negative)
             {
                 e.Cancel = true;
                 this.Hide();
                 notifyIcon.ShowBalloonTip(1000);
+            }
+            else
+            {
+                System.Windows.Application.Current.Shutdown();
             }
 
         }
