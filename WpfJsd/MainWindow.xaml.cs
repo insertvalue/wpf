@@ -47,7 +47,7 @@ namespace WpfJsd
             MessageDialogResult clickresult = await this.ShowMessageAsync("提示", "确定是否关闭当前应用程序？", MessageDialogStyle.AffirmativeAndNegative, settings);
             if (clickresult == MessageDialogResult.Negative)
             {
-                this.Hide();                                   
+                Hide();                                   
                 notifyIcon.ShowBalloonTip(1000);
             }
             else
