@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using System.Collections.Generic;
 
 namespace WpfJsd
 {
@@ -19,8 +20,13 @@ namespace WpfJsd
     public partial class MainWindow : MetroWindow
     {
         // 轮询间隔
-        private int interval = Convert.ToInt16(ConfigurationManager.AppSettings["PollInterval"]) * 60 * 1000;
-
+        private int INTERVAL = Convert.ToInt16(ConfigurationManager.AppSettings["PollInterval"]) * 60 * 1000;
+        // 新拣货任务查询接口
+        private string URL_NEW_TASK = "http://out.jd.id:12345/f/out/pick/notify/hasNewTask";
+        // 延迟拣货任务查询接口
+        private string URL_DELAY_TASK = "http://out.jd.id:12345/f/out/pick/notify/hasDelayTask";
+        // 仓库列表
+        private List<Warehouse> warehouseList = new List<Warehouse>();
         public MainWindow()
         {
             InitializeComponent();
@@ -42,6 +48,14 @@ namespace WpfJsd
             IsRepeat.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsRepeat"]);
             IsNew.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsNew"]);
             IsDelay.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsDelay"]);
+            warehouseList.Add(new Warehouse { Name = "--请选择门店--", Value = "" });
+            warehouseList.Add(new Warehouse { Name = "极速达仓库一", Value = "10005" });
+            warehouseList.Add(new Warehouse { Name = "极速达仓库二", Value = "10006" });
+            warehouseList.Add(new Warehouse { Name = "极速达仓库三", Value = "10007" });
+            warehouseComboBox.ItemsSource = warehouseList;
+            warehouseComboBox.DisplayMemberPath = "Name";//显示出来的值
+            warehouseComboBox.SelectedValuePath = "Value";//实际选中后获取的结果的值
+            warehouseComboBox.SelectedIndex = 0;
         }
 
 
@@ -101,13 +115,20 @@ namespace WpfJsd
         {
             Thread thread = new Thread(start: () =>
             {
+                SpeechSynthesizer synth = new SpeechSynthesizer();
+                MetroDialogSettings settings = new MetroDialogSettings
+                {
+                    AnimateHide = true
+                };
                 while (true)
                 {
-                    string result = HttpGet("http://www.baidu.com", "");
+                    string result = HttpGet(URL_NEW_TASK, "whId=10005");
                     Console.WriteLine(result);
-                    SpeechSynthesizer synth = new SpeechSynthesizer();
-                    synth.SpeakAsync(LocUtil.GetString("TipNewMsg"));
-                    Thread.Sleep(interval);
+                    if (Convert.ToBoolean(result))
+                    {
+                        synth.SpeakAsync(LocUtil.GetString("TipNewMsg"));
+                    }
+                    Thread.Sleep(3000);
                 }
             })
             {
@@ -186,6 +207,18 @@ namespace WpfJsd
             ConfigurationManager.RefreshSection("appSettings");
         }
 
+        /// <summary>
+        /// 切换门店事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SelectWarehouse(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.ComboBox comboBox = sender as System.Windows.Controls.ComboBox;
+            Console.WriteLine(comboBox.SelectedValue);
+
+        }
+
         NotifyIcon notifyIcon = null;
 
         /// <summary>
@@ -194,6 +227,11 @@ namespace WpfJsd
         private void ToolIcon()
         {
             string path = Path.GetFullPath(@"Resources\favicon.ico");
+            if (this.notifyIcon != null)
+            {
+                this.notifyIcon.Dispose();
+                this.notifyIcon = null;
+            }
             this.notifyIcon = new NotifyIcon
             {
                 BalloonTipText = LocUtil.GetString("MsgBubble"), //设置程序启动时显示的文本
@@ -270,5 +308,11 @@ namespace WpfJsd
         {
             System.Windows.Application.Current.Shutdown();
         }
+    }
+
+    public class Warehouse
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

@@ -4,20 +4,20 @@
     <sys:String x:Key="ResourceDictionaryName">Loc-id-ID</sys:String>
 
     <sys:String x:Key="WindowTitle">JSecretary</sys:String>
-    <sys:String x:Key="IsRepeat">Repeating notice</sys:String>
-    <sys:String x:Key="IsNew">Picking Notice</sys:String>
-    <sys:String x:Key="IsDelay">Delay Notice</sys:String>
-    <sys:String x:Key="LabelDesc">Picking helper</sys:String>
-    <sys:String x:Key="SwitchOn">On</sys:String>
-    <sys:String x:Key="SwitchOff">Off</sys:String>
-    <sys:String x:Key="MenuItemLang">Language</sys:String>
-    <sys:String x:Key="TipNewMsg">You have new picking order,please handle in time!</sys:String>
-    <sys:String x:Key="Yes">Yes</sys:String>
-    <sys:String x:Key="No">No</sys:String>
-    <sys:String x:Key="MsgLvlNotice">Tip</sys:String>
-    <sys:String x:Key="MsgExit">Confim close the application?</sys:String>
-    <sys:String x:Key="MsgBubble">JSecretary is serving.</sys:String>
-    <sys:String x:Key="ServiceName">JSecretary Service</sys:String>
-    <sys:String x:Key="Open">Open</sys:String>
-    <sys:String x:Key="Exit">Exit</sys:String>
+    <sys:String x:Key="IsRepeat">Ulangi pemberitahuan</sys:String>
+    <sys:String x:Key="IsNew">Memilih pemberitahuan</sys:String>
+    <sys:String x:Key="IsDelay">Tertunda pemberitahuan </sys:String>
+    <sys:String x:Key="LabelDesc">Memilih asisten</sys:String>
+    <sys:String x:Key="SwitchOn">Buka</sys:String>
+    <sys:String x:Key="SwitchOff">Mati</sys:String>
+    <sys:String x:Key="MenuItemLang">Bahasa</sys:String>
+    <sys:String x:Key="TipNewMsg">Anda memiliki daftar pemilih baru, tolong selesaikan dalam waktu!</sys:String>
+    <sys:String x:Key="Yes">Ya</sys:String>
+    <sys:String x:Key="No">Tidak</sys:String>
+    <sys:String x:Key="MsgLvlNotice">Prompt</sys:String>
+    <sys:String x:Key="MsgExit">Pastikan untuk menutup aplikasi?</sys:String>
+    <sys:String x:Key="MsgBubble">JSecretary melayani.</sys:String>
+    <sys:String x:Key="ServiceName">JSecretary layanan</sys:String>
+    <sys:String x:Key="Open">Buka</sys:String>
+    <sys:String x:Key="Exit">Keluar</sys:String>
 </ResourceDictionary>

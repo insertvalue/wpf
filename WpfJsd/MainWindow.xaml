@@ -10,7 +10,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="i18N/MainWindow.zh-CN.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="i18N/MainWindow.en-US.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -26,17 +26,20 @@
                 <MenuItem Header="Bahasa" Tag="id-ID" IsCheckable="True" Click="SwitchLang"></MenuItem>
             </MenuItem>
         </Menu>
-        <WrapPanel Width="200" Margin="147,0,146.6,0" Grid.Row="1">
-            <StackPanel Orientation="Horizontal" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Label Content="{DynamicResource ResourceKey=IsRepeat}" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
+        <WrapPanel Width="300" Margin="0,0,0,0" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" Width="300" Height="30">
+                <ComboBox Name="warehouseComboBox" Width="120" Margin="90 0 0 0" SelectionChanged="SelectWarehouse" IsEditable="False"></ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="300" Height="30">
+                <Label Content="{DynamicResource ResourceKey=IsRepeat}" Width="120" HorizontalContentAlignment="Right" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
                 <Controls:ToggleSwitch Name="IsRepeat" Click="ConfigSwitch" OnLabel="{DynamicResource ResourceKey=SwitchOn}" OffLabel="{DynamicResource ResourceKey=SwitchOff}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Label Content="{DynamicResource ResourceKey=IsNew}" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
+            <StackPanel Orientation="Horizontal" Width="300" Height="30">
+                <Label Content="{DynamicResource ResourceKey=IsNew}" Width="120" HorizontalContentAlignment="Right" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
                 <Controls:ToggleSwitch Name="IsNew" Click="ConfigSwitch" OnLabel="{DynamicResource ResourceKey=SwitchOn}" OffLabel="{DynamicResource ResourceKey=SwitchOff}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Label Content="{DynamicResource ResourceKey=IsDelay}" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
+            <StackPanel Orientation="Horizontal" Width="300" Height="30">
+                <Label Content="{DynamicResource ResourceKey=IsDelay}" Width="120" HorizontalContentAlignment="Right" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
                 <Controls:ToggleSwitch Name="IsDelay" Click="ConfigSwitch" OnLabel="{DynamicResource ResourceKey=SwitchOn}" OffLabel="{DynamicResource ResourceKey=SwitchOff}"/>
             </StackPanel>
         </WrapPanel>
