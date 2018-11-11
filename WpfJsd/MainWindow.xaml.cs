@@ -21,33 +21,59 @@ namespace WpfJsd
         // 轮询间隔
         private int interval = Convert.ToInt16(ConfigurationManager.AppSettings["PollInterval"]) * 60 * 1000;
 
-
         public MainWindow()
         {
-            PollNotify();
             InitializeComponent();
+            InitLocale();
+            PollNotify();
             IsRepeat.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsRepeat"]);
             IsNew.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsNew"]);
             IsDelay.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsDelay"]);
             ToolIcon();
         }
 
+
+        /// <summary>
+        /// 初始化国际化
+        /// </summary>
+        private void InitLocale()
+        {
+            LocUtil.SetDefaultLanguage(this);
+
+            foreach (System.Windows.Controls.MenuItem item in menuItemLanguages.Items)
+            {
+                if (item.Tag.ToString().Equals(LocUtil.GetCurrentCultureName(this)))
+                {
+                    item.IsChecked = true;
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 重写OcClosing
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
-            ShowTipDialog();
+            ShowTipDialogOnClose();
         }
 
-        private async void ShowTipDialog() {
+        /// <summary>
+        /// 关闭窗口时提示窗口
+        /// </summary>
+        private async void ShowTipDialogOnClose()
+        {
             MetroDialogSettings settings = new MetroDialogSettings
             {
-                NegativeButtonText = "否",
-                AffirmativeButtonText = "是"
+                NegativeButtonText = LocUtil.GetString("Yes"),
+                AffirmativeButtonText = LocUtil.GetString("No")
             };
-            MessageDialogResult clickresult = await this.ShowMessageAsync("提示", "确定是否关闭当前应用程序？", MessageDialogStyle.AffirmativeAndNegative, settings);
+            MessageDialogResult clickresult = await this.ShowMessageAsync(LocUtil.GetString("MsgLvlNotice"), LocUtil.GetString("MsgExit"), MessageDialogStyle.AffirmativeAndNegative, settings);
             if (clickresult == MessageDialogResult.Negative)
             {
-                Hide();                                   
+                Hide();
                 notifyIcon.ShowBalloonTip(1000);
             }
             else
@@ -56,6 +82,9 @@ namespace WpfJsd
             }
         }
 
+        /// <summary>
+        /// 后台线程，轮询获取拣货单
+        /// </summary>
         public void PollNotify()
         {
             Thread thread = new Thread(start: () =>
@@ -65,7 +94,7 @@ namespace WpfJsd
                     string result = HttpGet("http://www.baidu.com", "");
                     Console.WriteLine(result);
                     SpeechSynthesizer synth = new SpeechSynthesizer();
-                    synth.SpeakAsync("您有新的拣货单，请及时处理！");
+                    synth.SpeakAsync(LocUtil.GetString("TipNewMsg"));
                     Thread.Sleep(interval);
                 }
             })
@@ -76,6 +105,12 @@ namespace WpfJsd
             thread.Start();
         }
 
+        /// <summary>
+        /// Http Get请求
+        /// </summary>
+        /// <param name="Url"></param>
+        /// <param name="postDataStr"></param>
+        /// <returns></returns>
         public string HttpGet(string Url, string postDataStr)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url + (postDataStr == "" ? "" : "?") + postDataStr);
@@ -92,6 +127,11 @@ namespace WpfJsd
             return retString;
         }
 
+        /// <summary>
+        /// CheckBox事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ConfigCheckBox(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.CheckBox checkBox = sender as System.Windows.Controls.CheckBox;
@@ -102,23 +142,58 @@ namespace WpfJsd
             ConfigurationManager.RefreshSection("appSettings");
         }
 
+        /// <summary>
+        /// 切换语言
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SwitchLang(Object sender, RoutedEventArgs e)
+        {
+            foreach (System.Windows.Controls.MenuItem item in menuItemLanguages.Items)
+            {
+                item.IsChecked = false;
+            }
+            System.Windows.Controls.MenuItem mi = sender as System.Windows.Controls.MenuItem;
+            mi.IsChecked = true;
+            LocUtil.SwitchLanguage(this, mi.Tag.ToString());
+            ToolIcon();
+        }
+
+        /// <summary>
+        /// ToggleSwitch开关事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ConfigSwitch(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+            Configuration cfa = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            bool? isChecked = toggleSwitch.IsChecked;
+            cfa.AppSettings.Settings[toggleSwitch.Name].Value = isChecked.ToString();
+            cfa.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection("appSettings");
+        }
+
         NotifyIcon notifyIcon = null;
 
+        /// <summary>
+        /// 最小化到通知栏
+        /// </summary>
         private void ToolIcon()
         {
             string path = Path.GetFullPath(@"Resources\favicon.ico");
             this.notifyIcon = new NotifyIcon
             {
-                BalloonTipText = "京小秘正在运行", //设置程序启动时显示的文本
-                Text = "京小秘服务",//最小化到托盘时，鼠标点击时显示的文本
+                BalloonTipText = LocUtil.GetString("MsgBubble"), //设置程序启动时显示的文本
+                Text = LocUtil.GetString("ServiceName"),//最小化到托盘时，鼠标点击时显示的文本
                 Icon = new System.Drawing.Icon(path),//程序图标
                 Visible = true
             };
             //右键菜单--打开菜单项
-            System.Windows.Forms.MenuItem open = new System.Windows.Forms.MenuItem("打开");
+            System.Windows.Forms.MenuItem open = new System.Windows.Forms.MenuItem(LocUtil.GetString("Open"));
             open.Click += new EventHandler(ShowWindow);
             //右键菜单--退出菜单项
-            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem("退出");
+            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem(LocUtil.GetString("Exit"));
             exit.Click += new EventHandler(CloseWindow);
             //关联托盘控件
             System.Windows.Forms.MenuItem[] childen = new System.Windows.Forms.MenuItem[] { open, exit };
@@ -151,6 +226,11 @@ namespace WpfJsd
             }
         }
 
+        /// <summary>
+        /// 显示窗口
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ShowWindow(object sender, EventArgs e)
         {
             this.Visibility = Visibility.Visible;
@@ -158,12 +238,22 @@ namespace WpfJsd
             this.Activate();
         }
 
+        /// <summary>
+        /// 隐藏窗口
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HideWindow(object sender, EventArgs e)
         {
             this.ShowInTaskbar = false;
             this.Visibility = Visibility.Hidden;
         }
 
+        /// <summary>
+        /// 关闭窗口
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CloseWindow(object sender, EventArgs e)
         {
             System.Windows.Application.Current.Shutdown();

@@ -6,11 +6,39 @@
         xmlns:local="clr-namespace:WpfJsd"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="京小秘" Height="300" Width="500">
+        Title="{DynamicResource ResourceKey=WindowTitle}" Height="300" Width="500">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="i18N/MainWindow.zh-CN.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
-        <CheckBox Content="重复通知" x:Name="IsRepeat" HorizontalAlignment="Left" Margin="60.424,122.228,0,0" VerticalAlignment="Top" Click="ConfigCheckBox" Grid.ColumnSpan="2"/>
-        <CheckBox Content="拣货通知" x:Name="IsNew" HorizontalAlignment="Left" Margin="60.424,147.228,0,0" VerticalAlignment="Top" Click="ConfigCheckBox" Grid.ColumnSpan="2"/>
-        <CheckBox Content="滞留通知" x:Name="IsDelay" HorizontalAlignment="Left" Margin="60.424,172.228,0,0" VerticalAlignment="Top" Click="ConfigCheckBox" Grid.ColumnSpan="2"/>
-        <Label Content="拣货任务通知助手" HorizontalAlignment="Left" Margin="60,30,0,0" VerticalAlignment="Top" Width="360" Height="60" Grid.ColumnSpan="2" FontSize="36" FontFamily="Microsoft YaHei UI" Foreground="#FF2A0DBC" FontWeight="Bold"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Name="menuItemLanguages" Header="{DynamicResource ResourceKey=MenuItemLang}">
+                <MenuItem Header="中文" Tag="zh-CN" IsCheckable="True" IsChecked="True" Click="SwitchLang"></MenuItem>
+                <MenuItem Header="English" Tag="en-US" IsCheckable="True" Click="SwitchLang"></MenuItem>
+                <MenuItem Header="Bahasa" Tag="id-ID" IsCheckable="True" Click="SwitchLang"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <WrapPanel Width="200" Margin="147,0,146.6,0" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Label Content="{DynamicResource ResourceKey=IsRepeat}" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
+                <Controls:ToggleSwitch Name="IsRepeat" Click="ConfigSwitch" OnLabel="{DynamicResource ResourceKey=SwitchOn}" OffLabel="{DynamicResource ResourceKey=SwitchOff}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Label Content="{DynamicResource ResourceKey=IsNew}" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
+                <Controls:ToggleSwitch Name="IsNew" Click="ConfigSwitch" OnLabel="{DynamicResource ResourceKey=SwitchOn}" OffLabel="{DynamicResource ResourceKey=SwitchOff}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Label Content="{DynamicResource ResourceKey=IsDelay}" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
+                <Controls:ToggleSwitch Name="IsDelay" Click="ConfigSwitch" OnLabel="{DynamicResource ResourceKey=SwitchOn}" OffLabel="{DynamicResource ResourceKey=SwitchOff}"/>
+            </StackPanel>
+        </WrapPanel>
     </Grid>
 </Controls:MetroWindow>
