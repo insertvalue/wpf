@@ -77,7 +77,7 @@ namespace WpfJsd
             UserPrefs.SetValue(GetElementName(element) + ".localization", inFiveCharLang);
         }
         public static string GetString(string id) {
-            return rd.FindName(id) as string;
+            return rd[id] as string;
         }
         /// <summary>  
         /// Returns the path to the ResourceDictionary file based on the language character string.  

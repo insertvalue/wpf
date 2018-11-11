@@ -24,12 +24,24 @@ namespace WpfJsd
         public MainWindow()
         {
             InitializeComponent();
+            // 初始化国际化
             InitLocale();
+            // 初始化线程，扫描拣货单
             PollNotify();
+            // 初始化UI配置控件
+            InitConf();
+            // 初始化通知栏图标
+            ToolIcon();
+        }
+
+        /// <summary>
+        /// 初始化UI配置控件
+        /// </summary>
+        private void InitConf()
+        {
             IsRepeat.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsRepeat"]);
             IsNew.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsNew"]);
             IsDelay.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsDelay"]);
-            ToolIcon();
         }
 
 
@@ -67,8 +79,8 @@ namespace WpfJsd
         {
             MetroDialogSettings settings = new MetroDialogSettings
             {
-                NegativeButtonText = LocUtil.GetString("Yes"),
-                AffirmativeButtonText = LocUtil.GetString("No")
+                NegativeButtonText = LocUtil.GetString("No"),
+                AffirmativeButtonText = LocUtil.GetString("Yes")
             };
             MessageDialogResult clickresult = await this.ShowMessageAsync(LocUtil.GetString("MsgLvlNotice"), LocUtil.GetString("MsgExit"), MessageDialogStyle.AffirmativeAndNegative, settings);
             if (clickresult == MessageDialogResult.Negative)
