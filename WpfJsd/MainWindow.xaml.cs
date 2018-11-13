@@ -11,6 +11,11 @@ using System.ComponentModel;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System.Collections.Generic;
+using WPFNotification.Services;
+using WPFNotification.Model;
+using WpfJsd.Model;
+using WPFNotification.Core.Configuration;
+using WpfJsd.Core;
 
 namespace WpfJsd
 {
@@ -19,6 +24,8 @@ namespace WpfJsd
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private INotificationDialogService _dailogService = new NotificationDialogService();
+        private NotificationConfiguration configuration = new NotificationConfiguration(TimeSpan.Zero, 200, 100, Constants.MyNotificationTemplateName, NotificationFlowDirection.RightBottom);
         // 轮询间隔
         private int INTERVAL = Convert.ToInt16(ConfigurationManager.AppSettings["PollInterval"]) * 60 * 1000;
         // 新拣货任务查询接口
@@ -64,11 +71,11 @@ namespace WpfJsd
         /// </summary>
         private void InitLocale()
         {
-            LocUtil.SetDefaultLanguage(this);
+            LocaleUtil.SetDefaultLanguage(this);
 
             foreach (System.Windows.Controls.MenuItem item in menuItemLanguages.Items)
             {
-                if (item.Tag.ToString().Equals(LocUtil.GetCurrentCultureName(this)))
+                if (item.Tag.ToString().Equals(LocaleUtil.GetCurrentCultureName(this)))
                 {
                     item.IsChecked = true;
                 }
@@ -93,10 +100,10 @@ namespace WpfJsd
         {
             MetroDialogSettings settings = new MetroDialogSettings
             {
-                NegativeButtonText = LocUtil.GetString("No"),
-                AffirmativeButtonText = LocUtil.GetString("Yes")
+                NegativeButtonText = LocaleUtil.GetString("No"),
+                AffirmativeButtonText = LocaleUtil.GetString("Yes")
             };
-            MessageDialogResult clickresult = await this.ShowMessageAsync(LocUtil.GetString("MsgLvlNotice"), LocUtil.GetString("MsgExit"), MessageDialogStyle.AffirmativeAndNegative, settings);
+            MessageDialogResult clickresult = await this.ShowMessageAsync(LocaleUtil.GetString("MsgLvlNotice"), LocaleUtil.GetString("MsgExit"), MessageDialogStyle.AffirmativeAndNegative, settings);
             if (clickresult == MessageDialogResult.Negative)
             {
                 Hide();
@@ -124,9 +131,9 @@ namespace WpfJsd
                 {
                     string result = HttpGet(URL_NEW_TASK, "whId=10005");
                     Console.WriteLine(result);
-                    if (Convert.ToBoolean(result))
+                    if (result != null && Convert.ToBoolean(result))
                     {
-                        synth.SpeakAsync(LocUtil.GetString("TipNewMsg"));
+                        synth.SpeakAsync(LocaleUtil.GetString("TipNewMsg"));
                     }
                     Thread.Sleep(3000);
                 }
@@ -135,6 +142,7 @@ namespace WpfJsd
                 // 设置为true，关闭窗口后才会自动关闭线程
                 IsBackground = true
             };
+            thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
         }
 
@@ -149,14 +157,29 @@ namespace WpfJsd
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url + (postDataStr == "" ? "" : "?") + postDataStr);
             request.Method = "GET";
             request.ContentType = "text/html;charset=UTF-8";
+            string retString = null;
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream myResponseStream = response.GetResponseStream();
+                StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8);
+                retString = myStreamReader.ReadToEnd();
+                myStreamReader.Close();
+                myResponseStream.Close();
+            }
+            catch (Exception)
+            {
+                grid.Dispatcher.Invoke(() =>
+                {
+                    var newNotification = new MyNotification()
+                    {
+                        Title = "提示",
+                        Content = "无法连接到服务器！"
+                    };
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream myResponseStream = response.GetResponseStream();
-            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8);
-            string retString = myStreamReader.ReadToEnd();
-            myStreamReader.Close();
-            myResponseStream.Close();
-
+                    _dailogService.ShowNotificationWindow(newNotification, configuration);
+                });
+            }
             return retString;
         }
 
@@ -188,7 +211,7 @@ namespace WpfJsd
             }
             System.Windows.Controls.MenuItem mi = sender as System.Windows.Controls.MenuItem;
             mi.IsChecked = true;
-            LocUtil.SwitchLanguage(this, mi.Tag.ToString());
+            LocaleUtil.SwitchLanguage(this, mi.Tag.ToString());
             ToolIcon();
         }
 
@@ -216,7 +239,14 @@ namespace WpfJsd
         {
             System.Windows.Controls.ComboBox comboBox = sender as System.Windows.Controls.ComboBox;
             Console.WriteLine(comboBox.SelectedValue);
-
+                                 
+            var newNotification = new MyNotification()
+            {
+                Title = "提示",
+                Content = "无法连接到服务器！"
+            };
+            
+            _dailogService.ShowNotificationWindow(newNotification, configuration);
         }
 
         NotifyIcon notifyIcon = null;
@@ -234,16 +264,16 @@ namespace WpfJsd
             }
             this.notifyIcon = new NotifyIcon
             {
-                BalloonTipText = LocUtil.GetString("MsgBubble"), //设置程序启动时显示的文本
-                Text = LocUtil.GetString("ServiceName"),//最小化到托盘时，鼠标点击时显示的文本
+                BalloonTipText = LocaleUtil.GetString("MsgBubble"), //设置程序启动时显示的文本
+                Text = LocaleUtil.GetString("ServiceName"),//最小化到托盘时，鼠标点击时显示的文本
                 Icon = new System.Drawing.Icon(path),//程序图标
                 Visible = true
             };
             //右键菜单--打开菜单项
-            System.Windows.Forms.MenuItem open = new System.Windows.Forms.MenuItem(LocUtil.GetString("Open"));
+            System.Windows.Forms.MenuItem open = new System.Windows.Forms.MenuItem(LocaleUtil.GetString("Open"));
             open.Click += new EventHandler(ShowWindow);
             //右键菜单--退出菜单项
-            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem(LocUtil.GetString("Exit"));
+            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem(LocaleUtil.GetString("Exit"));
             exit.Click += new EventHandler(CloseWindow);
             //关联托盘控件
             System.Windows.Forms.MenuItem[] childen = new System.Windows.Forms.MenuItem[] { open, exit };

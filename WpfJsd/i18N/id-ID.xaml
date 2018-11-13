@@ -20,4 +20,11 @@
     <sys:String x:Key="ServiceName">JSecretary layanan</sys:String>
     <sys:String x:Key="Open">Buka</sys:String>
     <sys:String x:Key="Exit">Keluar</sys:String>
+    <sys:String x:Key="TitleLogin">用户登录</sys:String>
+    <sys:String x:Key="LabelUsername">用户名</sys:String>
+    <sys:String x:Key="LabelPassword">密码</sys:String>
+    <sys:String x:Key="PlaceholderUsername">请输入用户名</sys:String>
+    <sys:String x:Key="PlaceholderPassword">请输入密码</sys:String>
+    <sys:String x:Key="ButtonLogin">登录</sys:String>
+    <sys:String x:Key="RequireMsg">必填</sys:String>
 </ResourceDictionary>

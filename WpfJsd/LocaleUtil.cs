@@ -4,11 +4,30 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+
 namespace WpfJsd
 {
-    public static class LocUtil
+    public static class LocaleUtil
     {
         private static ResourceDictionary rd;
+
+        /// <summary>
+        /// 初始化国际化
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="menuItem"></param>
+        public static void InitLocale(FrameworkElement element, MenuItem menuItem) {
+            LocaleUtil.SetDefaultLanguage(element);
+
+            foreach (MenuItem item in menuItem.Items)
+            {
+                if (item.Tag.ToString().Equals(LocaleUtil.GetCurrentCultureName(element)))
+                {
+                    item.IsChecked = true;
+                }
+            }
+        }
 
         /// <summary>  
         /// Get application name from an element  
@@ -57,7 +76,7 @@ namespace WpfJsd
         /// <param name="element"></param>  
         public static void SetDefaultLanguage(FrameworkElement element)
         {
-            SetLanguageResourceDictionary(element, GetLocXAMLFilePath(GetElementName(element), GetCurrentCultureName(element)));
+            SetLanguageResourceDictionary(element, GetLocXAMLFilePath(GetCurrentCultureName(element)));
         }
         /// <summary>  
         /// Dynamically load a Localization ResourceDictionary from a file  
@@ -65,7 +84,7 @@ namespace WpfJsd
         public static void SwitchLanguage(FrameworkElement element, string inFiveCharLang)
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(inFiveCharLang);
-            SetLanguageResourceDictionary(element, GetLocXAMLFilePath(GetElementName(element), inFiveCharLang));
+            SetLanguageResourceDictionary(element, GetLocXAMLFilePath(inFiveCharLang));
             // Save new culture info to registry  
             RegistryKey UserPrefs = Registry.CurrentUser.OpenSubKey("GsmLib" + @"\" + GetAppName(element), true);
             if (UserPrefs == null)
@@ -84,10 +103,10 @@ namespace WpfJsd
         /// </summary>  
         /// <param name="inFiveCharLang"></param>  
         /// <returns></returns>  
-        public static string GetLocXAMLFilePath(string element, string inFiveCharLang)
+        public static string GetLocXAMLFilePath(string inFiveCharLang)
         {
-            string locXamlFile = element + "." + inFiveCharLang + ".xaml";
-            string directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string locXamlFile = inFiveCharLang + ".xaml";
+            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             return Path.Combine(directory, "i18N", locXamlFile);
         }
         /// <summary>  

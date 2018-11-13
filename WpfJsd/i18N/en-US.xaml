@@ -20,4 +20,11 @@
     <sys:String x:Key="ServiceName">JSecretary Service</sys:String>
     <sys:String x:Key="Open">Open</sys:String>
     <sys:String x:Key="Exit">Exit</sys:String>
+    <sys:String x:Key="TitleLogin">User Login</sys:String>
+    <sys:String x:Key="LabelUsername">Username</sys:String>
+    <sys:String x:Key="LabelPassword">Password</sys:String>
+    <sys:String x:Key="PlaceholderUsername">Please input username</sys:String>
+    <sys:String x:Key="PlaceholderPassword">Please input password</sys:String>
+    <sys:String x:Key="ButtonLogin">Login</sys:String>
+    <sys:String x:Key="RequireMsg">Required</sys:String>
 </ResourceDictionary>

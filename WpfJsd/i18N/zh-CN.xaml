@@ -20,4 +20,11 @@
     <sys:String x:Key="ServiceName">京小秘服务</sys:String>
     <sys:String x:Key="Open">打开</sys:String>
     <sys:String x:Key="Exit">退出</sys:String>
+    <sys:String x:Key="TitleLogin">用户登录</sys:String>
+    <sys:String x:Key="LabelUsername">用户名</sys:String>
+    <sys:String x:Key="LabelPassword">密码</sys:String>
+    <sys:String x:Key="PlaceholderUsername">请输入用户名</sys:String>
+    <sys:String x:Key="PlaceholderPassword">请输入密码</sys:String>
+    <sys:String x:Key="ButtonLogin">登录</sys:String>
+    <sys:String x:Key="RequireMsg">必填</sys:String>
 </ResourceDictionary>

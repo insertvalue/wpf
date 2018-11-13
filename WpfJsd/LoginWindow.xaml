@@ -1,0 +1,51 @@
+﻿<Controls:MetroWindow x:Class="WpfJsd.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfJsd"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="{DynamicResource ResourceKey=WindowTitle}" Height="300" Width="500">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="i18N/zh-CN.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Name="loginGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Name="menuItemLanguages" Header="{DynamicResource ResourceKey=MenuItemLang}">
+                <MenuItem Header="中文" Tag="zh-CN" IsCheckable="True" IsChecked="True" Click="SwitchLang"></MenuItem>
+                <MenuItem Header="English" Tag="en-US" IsCheckable="True" Click="SwitchLang"></MenuItem>
+                <MenuItem Header="Bahasa" Tag="id-ID" IsCheckable="True" Click="SwitchLang"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <WrapPanel Width="300" Grid.Row="1" HorizontalAlignment="Left" Margin="60 0 0 0">
+
+            <StackPanel Orientation="Horizontal" Width="300" Height="40" FlowDirection="RightToLeft">
+                <Label Content="{DynamicResource ResourceKey=TitleLogin}" Width="180" Margin="0 0 20 0" FontSize="24" HorizontalContentAlignment="Right" FontWeight="Bold"></Label>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="300" Height="30" Margin="0,20,0,0">
+                <Label Content="{DynamicResource ResourceKey=LabelUsername}" Width="100" HorizontalContentAlignment="Right" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
+                <TextBox 
+                    Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                    Name="Username" Width="180" Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PlaceholderUsername}" Controls:TextBoxHelper.ClearTextButton="True"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="300" Height="30" Margin="0,20,0,0">
+                <Label Content="{DynamicResource ResourceKey=LabelPassword}" Width="100" HorizontalContentAlignment="Right" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
+                <TextBox 
+                    Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                    Name="Password" Width="180" Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PlaceholderPassword}" Controls:TextBoxHelper.ClearTextButton="True"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="300" Height="30" Margin="0,20,0,0" FlowDirection="RightToLeft">
+                <Button Content="{DynamicResource ResourceKey=ButtonLogin}" Width="180" Click="OnLogin"/>
+            </StackPanel>
+        </WrapPanel>
+    </Grid>
+</Controls:MetroWindow>
