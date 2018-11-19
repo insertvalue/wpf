@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Windows;
+﻿using System.ComponentModel;
+using WpfJsd.Core;
 
-namespace WpfJsd
+namespace WpfJsd.Model
 {
     /// <summary>
     /// <para>用户类</para>

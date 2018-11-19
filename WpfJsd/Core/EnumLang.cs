@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfJsd
+namespace WpfJsd.Core
 {
-    interface IToolIcon
+    enum EnumLang
     {
-        void RefreshToolIcon();
+        zhCn,
+        en,
+        indonesia
     }
 }

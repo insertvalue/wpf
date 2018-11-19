@@ -1,19 +1,14 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
+﻿using EasyHttp.Http;
+using MahApps.Metro.Controls;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Dynamic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using WpfJsd.Common;
+using WpfJsd.Core;
+using WpfJsd.Model;
+using WPFNotification.Core.Configuration;
+using WPFNotification.Services;
 
 namespace WpfJsd
 {
@@ -22,8 +17,7 @@ namespace WpfJsd
     /// </summary>
     public partial class LoginWindow : MetroWindow, ILocale
     {
-
-        public LoginWindow()
+         public LoginWindow()
         {
             InitializeComponent();
             InitLocale();
@@ -40,6 +34,9 @@ namespace WpfJsd
             loginGrid.DataContext = user;
         }
 
+        /// <summary>
+        /// 初始化国际化
+        /// </summary>
         public void InitLocale()
         {
             LocaleUtil.InitLocale(this, menuItemLanguages);
@@ -70,13 +67,14 @@ namespace WpfJsd
         {
             if (IsValidate())
             {
+                // 跳转到主界面
                 App.Current.Dispatcher.Invoke((Action)(() =>
                 {
                     MainWindow windows = new MainWindow();
                     this.Hide();
                     windows.Show();
                 }));
-            }            
+            }
         }
 
         /// <summary>
@@ -86,20 +84,37 @@ namespace WpfJsd
         private bool IsValidate()
         {
             User user = loginGrid.DataContext as User;
-            if (!user.Validation) {
+            if (!user.Validation)
+            {
+                // 开启校验器
                 user.Validation = true;
             }
-            
-            if (string.Empty.Equals(Username.Text)) {
+            // 用户名必填
+            if (string.Empty.Equals(Username.Text))
+            {
                 Username.Text = string.Empty;
                 Username.Focus();
                 return false;
             }
-            if (string.Empty.Equals(Password.Text)) {
+            // 密码必填
+            if (string.Empty.Equals(Password.Text))
+            {
                 Password.Text = string.Empty;
-                Password.Focus(); return false;
+                Password.Focus();
+                return false;
             }
-            return true;
+            // 远程校验
+            var resp = HttpUtil.Login(Username.Text, Password.Text);
+
+            if (resp.login)
+            {
+                HttpUtil.FetchWhList();
+                return true;
+            }
+            else {
+                loginGrid.ShowDialog(resp.msg as string);
+                return false;
+            }
         }
     }
 }

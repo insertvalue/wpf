@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WpfJsd.Common;
 
-namespace WpfJsd
+namespace WpfJsd.Core
 {
     class MyRequireAttribute : RequiredAttribute
     {

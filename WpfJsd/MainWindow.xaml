@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Name="menuItemLanguages" Header="{DynamicResource ResourceKey=MenuItemLang}">
-                <MenuItem Header="中文" Tag="zh-CN" IsCheckable="True" IsChecked="True" Click="SwitchLang"></MenuItem>
+                <MenuItem Header="中文" Tag="zh-CN" IsCheckable="True" Click="SwitchLang"></MenuItem>
                 <MenuItem Header="English" Tag="en-US" IsCheckable="True" Click="SwitchLang"></MenuItem>
                 <MenuItem Header="Bahasa" Tag="id-ID" IsCheckable="True" Click="SwitchLang"></MenuItem>
             </MenuItem>

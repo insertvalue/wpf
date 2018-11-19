@@ -12,6 +12,7 @@
     <sys:String x:Key="SwitchOff">Mati</sys:String>
     <sys:String x:Key="MenuItemLang">Bahasa</sys:String>
     <sys:String x:Key="TipNewMsg">Anda memiliki daftar pemilih baru, tolong selesaikan dalam waktu!</sys:String>
+    <sys:String x:Key="TipDelayMsg">Anda memiliki daftar pemilih yang ditahan, tolong selesaikan dalam waktu!</sys:String>
     <sys:String x:Key="Yes">Ya</sys:String>
     <sys:String x:Key="No">Tidak</sys:String>
     <sys:String x:Key="MsgLvlNotice">Prompt</sys:String>
@@ -20,11 +21,13 @@
     <sys:String x:Key="ServiceName">JSecretary layanan</sys:String>
     <sys:String x:Key="Open">Buka</sys:String>
     <sys:String x:Key="Exit">Keluar</sys:String>
-    <sys:String x:Key="TitleLogin">用户登录</sys:String>
-    <sys:String x:Key="LabelUsername">用户名</sys:String>
-    <sys:String x:Key="LabelPassword">密码</sys:String>
-    <sys:String x:Key="PlaceholderUsername">请输入用户名</sys:String>
-    <sys:String x:Key="PlaceholderPassword">请输入密码</sys:String>
-    <sys:String x:Key="ButtonLogin">登录</sys:String>
-    <sys:String x:Key="RequireMsg">必填</sys:String>
+    <sys:String x:Key="TitleLogin">Login pengguna</sys:String>
+    <sys:String x:Key="LabelUsername">Nama pengguna</sys:String>
+    <sys:String x:Key="LabelPassword">Kata sandi</sys:String>
+    <sys:String x:Key="PlaceholderUsername">Silakan masukkan nama pengguna</sys:String>
+    <sys:String x:Key="PlaceholderPassword">Silakan masukkan kata sandi Anda</sys:String>
+    <sys:String x:Key="ButtonLogin">Login</sys:String>
+    <sys:String x:Key="RequireMsg"> Diperlukan</sys:String>
+    <sys:String x:Key="Tips">Tips</sys:String>
+    <sys:String x:Key="ServerLost">Tidak dapat terhubung ke server!</sys:String>
 </ResourceDictionary>

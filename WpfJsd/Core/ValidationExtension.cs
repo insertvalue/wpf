@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace WpfJsd
+namespace WpfJsd.Core
 {
     /// <summary>
     /// <para>校验扩展类</para>

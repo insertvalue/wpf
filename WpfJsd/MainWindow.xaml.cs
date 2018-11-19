@@ -16,6 +16,7 @@ using WPFNotification.Model;
 using WpfJsd.Model;
 using WPFNotification.Core.Configuration;
 using WpfJsd.Core;
+using WpfJsd.Common;
 
 namespace WpfJsd
 {
@@ -28,12 +29,6 @@ namespace WpfJsd
         private NotificationConfiguration configuration = new NotificationConfiguration(TimeSpan.Zero, 200, 100, Constants.MyNotificationTemplateName, NotificationFlowDirection.RightBottom);
         // 轮询间隔
         private int INTERVAL = Convert.ToInt16(ConfigurationManager.AppSettings["PollInterval"]) * 60 * 1000;
-        // 新拣货任务查询接口
-        private string URL_NEW_TASK = "http://out.jd.id:12345/f/out/pick/notify/hasNewTask";
-        // 延迟拣货任务查询接口
-        private string URL_DELAY_TASK = "http://out.jd.id:12345/f/out/pick/notify/hasDelayTask";
-        // 仓库列表
-        private List<Warehouse> warehouseList = new List<Warehouse>();
         public MainWindow()
         {
             InitializeComponent();
@@ -55,13 +50,9 @@ namespace WpfJsd
             IsRepeat.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsRepeat"]);
             IsNew.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsNew"]);
             IsDelay.IsChecked = Convert.ToBoolean(ConfigurationManager.AppSettings["IsDelay"]);
-            warehouseList.Add(new Warehouse { Name = "--请选择门店--", Value = "" });
-            warehouseList.Add(new Warehouse { Name = "极速达仓库一", Value = "10005" });
-            warehouseList.Add(new Warehouse { Name = "极速达仓库二", Value = "10006" });
-            warehouseList.Add(new Warehouse { Name = "极速达仓库三", Value = "10007" });
-            warehouseComboBox.ItemsSource = warehouseList;
+            warehouseComboBox.ItemsSource = App.WhList;
             warehouseComboBox.DisplayMemberPath = "Name";//显示出来的值
-            warehouseComboBox.SelectedValuePath = "Value";//实际选中后获取的结果的值
+            warehouseComboBox.SelectedValuePath = "Id";//实际选中后获取的结果的值
             warehouseComboBox.SelectedIndex = 0;
         }
 
@@ -71,16 +62,7 @@ namespace WpfJsd
         /// </summary>
         private void InitLocale()
         {
-            LocaleUtil.SetDefaultLanguage(this);
-
-            foreach (System.Windows.Controls.MenuItem item in menuItemLanguages.Items)
-            {
-                if (item.Tag.ToString().Equals(LocaleUtil.GetCurrentCultureName(this)))
-                {
-                    item.IsChecked = true;
-                }
-            }
-
+            LocaleUtil.InitLocale(this, menuItemLanguages);
         }
 
         /// <summary>
@@ -122,18 +104,38 @@ namespace WpfJsd
         {
             Thread thread = new Thread(start: () =>
             {
-                SpeechSynthesizer synth = new SpeechSynthesizer();
+                SpeechSynthesizer synth = new SpeechSynthesizer
+                {
+                    Volume = 100
+                };
                 MetroDialogSettings settings = new MetroDialogSettings
                 {
                     AnimateHide = true
                 };
                 while (true)
                 {
-                    string result = HttpGet(URL_NEW_TASK, "whId=10005");
-                    Console.WriteLine(result);
-                    if (result != null && Convert.ToBoolean(result))
+                    bool isNewOn = Convert.ToBoolean(ConfigurationManager.AppSettings["IsNew"]);
+                    bool isDelayOn = Convert.ToBoolean(ConfigurationManager.AppSettings["IsDelay"]);
+                    // 新拣货任务开关打开
+                    if (isNewOn)
                     {
-                        synth.SpeakAsync(LocaleUtil.GetString("TipNewMsg"));
+                        bool hasTask = HttpUtil.FetchNewTask(Convert.ToString(App.CurrentWh));
+                        if (hasTask)
+                        {
+                            synth.SpeakAsync(LocaleUtil.GetString("TipNewMsg"));
+                            grid.ShowDialog("TipNewMsg");
+                            Thread.Sleep(3000);
+                        }
+                    }
+                    if (isDelayOn)
+                    {
+                        bool hasTask = HttpUtil.FetchDelayTask(Convert.ToString(App.CurrentWh));
+                        if (hasTask)
+                        {
+                            synth.SpeakAsync(LocaleUtil.GetString("TipNewMsg"));
+                            grid.ShowDialog("TipNewMsg");
+                            Thread.Sleep(3000);
+                        }
                     }
                     Thread.Sleep(3000);
                 }
@@ -144,43 +146,6 @@ namespace WpfJsd
             };
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
-        }
-
-        /// <summary>
-        /// Http Get请求
-        /// </summary>
-        /// <param name="Url"></param>
-        /// <param name="postDataStr"></param>
-        /// <returns></returns>
-        public string HttpGet(string Url, string postDataStr)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url + (postDataStr == "" ? "" : "?") + postDataStr);
-            request.Method = "GET";
-            request.ContentType = "text/html;charset=UTF-8";
-            string retString = null;
-            try
-            {
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream myResponseStream = response.GetResponseStream();
-                StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8);
-                retString = myStreamReader.ReadToEnd();
-                myStreamReader.Close();
-                myResponseStream.Close();
-            }
-            catch (Exception)
-            {
-                grid.Dispatcher.Invoke(() =>
-                {
-                    var newNotification = new MyNotification()
-                    {
-                        Title = "提示",
-                        Content = "无法连接到服务器！"
-                    };
-
-                    _dailogService.ShowNotificationWindow(newNotification, configuration);
-                });
-            }
-            return retString;
         }
 
         /// <summary>
@@ -239,14 +204,7 @@ namespace WpfJsd
         {
             System.Windows.Controls.ComboBox comboBox = sender as System.Windows.Controls.ComboBox;
             Console.WriteLine(comboBox.SelectedValue);
-                                 
-            var newNotification = new MyNotification()
-            {
-                Title = "提示",
-                Content = "无法连接到服务器！"
-            };
-            
-            _dailogService.ShowNotificationWindow(newNotification, configuration);
+            App.CurrentWh = Convert.ToInt32(comboBox.SelectedValue);
         }
 
         NotifyIcon notifyIcon = null;
@@ -338,11 +296,5 @@ namespace WpfJsd
         {
             System.Windows.Application.Current.Shutdown();
         }
-    }
-
-    public class Warehouse
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
     }
 }

@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WpfJsd.Core;
+using WpfJsd.Model;
 
 namespace WpfJsd
 {
@@ -13,5 +15,10 @@ namespace WpfJsd
     /// </summary>
     public partial class App : Application
     {
+        public static List<Warehouse> WhList { get; set; }
+
+        public static LoginUser User { get; set; }
+
+        public static int CurrentWh { get; set; }
     }
 }

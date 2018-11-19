@@ -54,6 +54,9 @@
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.2.0.0-alpha0105\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -89,12 +92,21 @@
     <Compile Include="Assets\NotificationItem.xaml.cs">
       <DependentUpon>NotificationItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\ConvertUtil.cs" />
+    <Compile Include="Common\CryptoUtil.cs" />
+    <Compile Include="Common\DialogUtil.cs" />
+    <Compile Include="Common\HttpUtil.cs" />
+    <Compile Include="Common\JSONUtil.cs" />
     <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\EnumLang.cs" />
+    <Compile Include="Model\LoginUser.cs" />
     <Compile Include="Model\MyNotification.cs" />
-    <Compile Include="MyRequireAttribute.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="UserMetadata.cs" />
-    <Compile Include="ValidationExtension.cs" />
+    <Compile Include="Core\MyRequireAttribute.cs" />
+    <Compile Include="Model\PrincipalVo.cs" />
+    <Compile Include="Model\ResponseModel.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Model\UserMetadata.cs" />
+    <Compile Include="Core\ValidationExtension.cs" />
     <Resource Include="Resources\images\newMail.png" />
     <Resource Include="Resources\images\toast_Icon.png" />
     <Resource Include="Resources\images\Warning-Message.png" />
@@ -119,9 +131,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ILocale.cs" />
-    <Compile Include="IToolIcon.cs" />
-    <Compile Include="LocaleUtil.cs" />
+    <Compile Include="Core\ILocale.cs" />
+    <Compile Include="Core\IToolIcon.cs" />
+    <Compile Include="Common\LocaleUtil.cs" />
     <Compile Include="LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
@@ -146,6 +158,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Warehouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

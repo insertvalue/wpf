@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace WpfJsd
+namespace WpfJsd.Model
 {
     /// <summary>
     /// <para>用户类</para>

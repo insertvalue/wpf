@@ -12,6 +12,7 @@
     <sys:String x:Key="SwitchOff">关</sys:String>
     <sys:String x:Key="MenuItemLang">语言</sys:String>
     <sys:String x:Key="TipNewMsg">您有新的拣货单，请及时处理！</sys:String>
+    <sys:String x:Key="TipDelayMsg">您有滞留拣货单，请及时处理！</sys:String>
     <sys:String x:Key="Yes">是</sys:String>
     <sys:String x:Key="No">否</sys:String>
     <sys:String x:Key="MsgLvlNotice">提示</sys:String>
@@ -27,4 +28,6 @@
     <sys:String x:Key="PlaceholderPassword">请输入密码</sys:String>
     <sys:String x:Key="ButtonLogin">登录</sys:String>
     <sys:String x:Key="RequireMsg">必填</sys:String>
+    <sys:String x:Key="Tips">提示</sys:String>
+    <sys:String x:Key="ServerLost">无法连接到服务器！</sys:String>
 </ResourceDictionary>
