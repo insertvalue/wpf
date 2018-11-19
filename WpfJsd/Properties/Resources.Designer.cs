@@ -31,7 +31,7 @@ namespace WpfJsd.Properties {
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-
+        
         /// <summary>
         ///   返回此类使用的缓存的 ResourceManager 实例。
         /// </summary>
@@ -67,16 +67,6 @@ namespace WpfJsd.Properties {
             get {
                 object obj = ResourceManager.GetObject("favicon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] order_zhCn {
-            get {
-                object obj = ResourceManager.GetObject("order_zhCn", resourceCulture);
-                return ((byte[])(obj));
             }
         }
     }
