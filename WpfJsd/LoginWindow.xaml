@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfJsd"
+        xmlns:pw="clr-namespace:WpfJsd.Model"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
         Title="{DynamicResource ResourceKey=WindowTitle}" Height="300" Width="500">
@@ -39,9 +39,10 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Width="300" Height="30" Margin="0,20,0,0">
                 <Label Content="{DynamicResource ResourceKey=LabelPassword}" Width="100" HorizontalContentAlignment="Right" Padding="0 10 0 0" Margin="0 0 20 0"></Label>
-                <TextBox 
-                    Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
-                    Name="Password" Width="180" Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PlaceholderPassword}" Controls:TextBoxHelper.ClearTextButton="True"/>
+                <PasswordBox Name="Password" Width="180"
+                             pw:PasswordBoxAssistant.BindPassword="true" 
+                             pw:PasswordBoxAssistant.BoundPassword="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" 
+                             Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PlaceholderPassword}" Controls:TextBoxHelper.ClearTextButton="True"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Width="300" Height="30" Margin="0,20,0,0" FlowDirection="RightToLeft">
                 <Button Content="{DynamicResource ResourceKey=ButtonLogin}" Width="180" Click="OnLogin"/>

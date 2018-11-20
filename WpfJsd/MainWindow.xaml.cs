@@ -32,6 +32,7 @@ namespace WpfJsd
         public MainWindow()
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             // 初始化国际化
             InitLocale();
             // 初始化线程，扫描拣货单

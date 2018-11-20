@@ -20,6 +20,7 @@ namespace WpfJsd
          public LoginWindow()
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitLocale();
             InitBinding();
         }
@@ -97,14 +98,15 @@ namespace WpfJsd
                 return false;
             }
             // 密码必填
-            if (string.Empty.Equals(Password.Text))
+            if (string.Empty.Equals(Password.Password))
             {
-                Password.Text = string.Empty;
+                // 这里不能用Password.Password = string.Empty触发校验。
+                PasswordBoxAssistant.HandlePasswordChanged(Password, null);
                 Password.Focus();
                 return false;
             }
             // 远程校验
-            var resp = HttpUtil.Login(Username.Text, Password.Text);
+            var resp = HttpUtil.Login(Username.Text, Password.Password);
 
             if (resp.login)
             {
