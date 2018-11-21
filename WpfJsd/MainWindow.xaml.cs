@@ -28,7 +28,7 @@ namespace WpfJsd
         private INotificationDialogService _dailogService = new NotificationDialogService();
         private NotificationConfiguration configuration = new NotificationConfiguration(TimeSpan.Zero, 200, 100, Constants.MyNotificationTemplateName, NotificationFlowDirection.RightBottom);
         // 轮询间隔
-        private int INTERVAL = Convert.ToInt16(ConfigurationManager.AppSettings["PollInterval"]) * 60 * 1000;
+        private static readonly int INTERVAL = Convert.ToInt16(ConfigurationManager.AppSettings["PollInterval"]) * 60 * 1000;
         public MainWindow()
         {
             InitializeComponent();
@@ -120,25 +120,39 @@ namespace WpfJsd
                     // 新拣货任务开关打开
                     if (isNewOn)
                     {
-                        bool hasTask = HttpUtil.FetchNewTask(Convert.ToString(App.CurrentWh));
-                        if (hasTask)
+                        ResponseModel model = HttpUtil.FetchNewTask(Convert.ToString(App.CurrentWh));
+                        if ("1".Equals(model.RtnStatus))
                         {
-                            synth.SpeakAsync(LocaleUtil.GetString("TipNewMsg"));
-                            grid.ShowDialog("TipNewMsg");
-                            Thread.Sleep(3000);
+                            grid.ShowDialog(model.RtnMsg);
+                        }
+                        else
+                        {
+                            bool hasTask = Convert.ToBoolean(model.Data);
+                            if (hasTask)
+                            {
+                                synth.SpeakAsync(LocaleUtil.GetString("TipNewMsg"));
+                                grid.ShowDialog("TipNewMsg");
+                            }
                         }
                     }
                     if (isDelayOn)
                     {
-                        bool hasTask = HttpUtil.FetchDelayTask(Convert.ToString(App.CurrentWh));
-                        if (hasTask)
+                        ResponseModel model = HttpUtil.FetchDelayTask(Convert.ToString(App.CurrentWh));
+                        if ("1".Equals(model.RtnStatus))
                         {
-                            synth.SpeakAsync(LocaleUtil.GetString("TipNewMsg"));
-                            grid.ShowDialog("TipNewMsg");
-                            Thread.Sleep(3000);
+                            grid.ShowDialog(model.RtnMsg);
+                        }
+                        else
+                        {
+                            bool hasTask = Convert.ToBoolean(model.Data);
+                            if (hasTask)
+                            {
+                                synth.SpeakAsync(LocaleUtil.GetString("TipDelayMsg"));
+                                grid.ShowDialog("TipDelayMsg");
+                            }
                         }
                     }
-                    Thread.Sleep(3000);
+                    Thread.Sleep(INTERVAL);
                 }
             })
             {

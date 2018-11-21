@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WpfJsd.Model
 {
-    class ResponseModel
+    public class ResponseModel
     {
         [JsonProperty(PropertyName = "data")]
         public dynamic Data { get; set; }

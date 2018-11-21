@@ -2,8 +2,10 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Dynamic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WpfJsd.Core;
@@ -14,15 +16,15 @@ namespace WpfJsd.Common
     public class HttpUtil
     {
         // 登录URL
-        private static readonly string LOGIN_URL = "http://mysso.jd.id/login";
+        private static readonly string LOGIN_URL = ConfigurationManager.AppSettings["LoginUrl"];
         // 新拣货任务查询接口
-        private static readonly string URL_NEW_TASK = "http://out.jd.id:12345/f/out/pick/notify/hasNewTask";
+        private static readonly string URL_NEW_TASK = ConfigurationManager.AppSettings["OutBaseUrl"] + "/f/out/pick/notify/hasNewTask";
         // 延迟拣货任务查询接口
-        private static readonly string URL_DELAY_TASK = "http://out.jd.id:12345/f/out/pick/notify/hasDelayTask";
+        private static readonly string URL_DELAY_TASK = ConfigurationManager.AppSettings["OutBaseUrl"] + "/f/out/pick/notify/hasDelayTask";
         // 门店列表接口
-        private static readonly string WH_LIST = "http://stock.jd.id/tag/basedata/warehouseList";
+        private static readonly string WH_LIST = ConfigurationManager.AppSettings["StockBaseUrl"] + "/tag/basedata/warehouseList";
         // AES加密KEY
-        private static readonly string KEY = "GRE5sAmmndnu0t3h1+OzMNfrGHoVn2mdy44qISfVJqs=";
+        private static readonly string KEY = ConfigurationManager.AppSettings["AESKey"];
         // HttpClient
         private static HttpClient httpClient = new HttpClient();
 
@@ -67,12 +69,12 @@ namespace WpfJsd.Common
         /// 获取拣货任务
         /// </summary>
         /// <returns></returns>
-        public static bool FetchNewTask(string whId)
+        public static ResponseModel FetchNewTask(string whId)
         {
             dynamic userParam = new ExpandoObject();
             userParam.whId = whId;
             ResponseModel model = EncryptoPost(URL_NEW_TASK, userParam);
-            return Convert.ToBoolean(model.Data);
+            return model;
         }
 
         /// <summary>
@@ -80,12 +82,12 @@ namespace WpfJsd.Common
         /// </summary>
         /// <param name="whId"></param>
         /// <returns></returns>
-        public static bool FetchDelayTask(string whId)
+        public static ResponseModel FetchDelayTask(string whId)
         {
             dynamic userParam = new ExpandoObject();
             userParam.whId = whId;
             ResponseModel model = EncryptoPost(URL_DELAY_TASK, userParam);
-            return Convert.ToBoolean(model.Data);
+            return model;
         }
 
         /// <summary>
@@ -120,10 +122,22 @@ namespace WpfJsd.Common
         private static ResponseModel EncryptoPost(string url, dynamic userParam)
         {
             string param = CryptoUtil.AESEncrypt(JsonConvert.SerializeObject(userParam), KEY);
-            string response = Post(url, param);
-            string decryptoText = CryptoUtil.AESDecrypt(response, KEY);
-            Console.WriteLine(JSONUtil.Prettify(decryptoText));
-            ResponseModel model = JsonConvert.DeserializeObject<ResponseModel>(decryptoText);
+            ResponseModel model = new ResponseModel
+            {
+                RtnStatus = "0"
+            };
+            try
+            {
+                string response = Post(url, param);
+                string decryptoText = CryptoUtil.AESDecrypt(response, KEY);
+                Console.WriteLine(JSONUtil.Prettify(decryptoText));
+                model = JsonConvert.DeserializeObject<ResponseModel>(decryptoText);
+            }
+            catch (Exception e)
+            {
+                model.RtnStatus = "1";
+                model.RtnMsg = e.Message;
+            }
             return model;
         }
 
@@ -135,8 +149,21 @@ namespace WpfJsd.Common
         /// <returns></returns>
         private static string Post(string url, dynamic param)
         {
-            HttpResponse response = httpClient.Post(url, param, HttpContentTypes.ApplicationJson);
-            return response.RawText;
+            string resp = "";
+            try
+            {
+                HttpResponse response = httpClient.Post(url, param, HttpContentTypes.ApplicationJson);
+                resp = response.RawText;
+            }
+            catch (WebException)
+            {
+                throw new WebException(LocaleUtil.GetString("ServerLost"));
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+            return resp;
         }
 
         /// <summary>
