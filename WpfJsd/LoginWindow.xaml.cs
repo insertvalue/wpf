@@ -4,6 +4,7 @@ using System;
 using System.Dynamic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using WpfJsd.Common;
 using WpfJsd.Core;
 using WpfJsd.Model;
@@ -116,6 +117,20 @@ namespace WpfJsd
             else {
                 loginGrid.ShowDialog(resp.msg as string);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// PasswordBox回车事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Password_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && IsValidate())
+            {
+                BtnLogin.Focus();
+                BtnLogin.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
         }
     }
